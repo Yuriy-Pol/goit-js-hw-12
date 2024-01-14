@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
       return;
     }
-
+    currentPage = 1; // Скидання значення currentPage при новому пошуку
     loadMoreButton.style.display = 'none';
 
     loader.style.display = 'block';
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
         totalHits = data.totalHits;
 
         if (searchQuery !== currentSearchQuery) {
-          currentPage = 1;
+          currentPage = 1; // Скидаємо значення currentPage на 1 для нового пошуку
           currentSearchQuery = searchQuery;
           galleryContainer.innerHTML = '';
         }
