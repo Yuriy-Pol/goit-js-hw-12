@@ -27,12 +27,10 @@ document.addEventListener('DOMContentLoaded', function () {
       });
       return;
     }
-    currentPage = 1; // Скидання значення currentPage при новому пошуку
-    loadMoreButton.style.display = 'none';
-
-    loader.style.display = 'block';
 
     try {
+      loader.style.display = 'block';
+
       const response = await axios.get(
         `https://pixabay.com/api/?key=${apiKey}&q=${searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${currentPage}&per_page=40`
       );
@@ -50,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
         totalHits = data.totalHits;
 
         if (searchQuery !== currentSearchQuery) {
-          currentPage = 1; // Скидаємо значення currentPage на 1 для нового пошуку
+          currentPage = 1;
           currentSearchQuery = searchQuery;
           galleryContainer.innerHTML = '';
         }
@@ -77,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
             message:
               "We're sorry, but you've reached the end of search results.",
           });
+          loadMoreButton.style.display = 'none'; // Приховати кнопку "Load More" при досягненні кінця результатів
         } else {
           loadMoreButton.style.display = 'block';
         }
@@ -91,13 +90,17 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     } catch (error) {
       loader.style.display = 'none';
+      iziToast.error({
+        title: 'Error',
+        message: 'Error fetching images. Please try again later.',
+      });
       console.error('Error fetching images:', error);
     }
   });
 
-  loadMoreButton.addEventListener('click', function () {
+  loadMoreButton.addEventListener('click', async function () {
+    await searchForm.dispatchEvent(new Event('submit'));
     currentPage += 1;
-    searchForm.dispatchEvent(new Event('submit'));
   });
 
   lightbox = new SimpleLightbox('#gallery a');
